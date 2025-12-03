@@ -1,0 +1,23 @@
+{
+  "name": "uso/sso-client",
+  "description": "SSO client for USO apps",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4":
+    { "USO\\SsoClient\\": "src/" }
+  },
+  "extra": {
+    "laravel":
+    {
+      "providers": ["USO\\SsoClient\\SSOServiceProvider"]
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "illuminate/support": "^8.0|^9.0|^10.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7.0"
+  }
+}

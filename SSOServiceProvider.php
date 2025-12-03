@@ -1,6 +1,6 @@
 <?php
 
-namespace SSO\SsoClient;
+namespace USO\SsoClient;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;

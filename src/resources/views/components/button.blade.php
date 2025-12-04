@@ -12,4 +12,4 @@
         text-decoration: none;
     }
 </style>
-<a class="sso-button" href="{{ route('sso.redirect) }}"> SSO Авторизация </a>
+<a class="sso-button" href="{{ route('sso.redirect') }}"> SSO Авторизация </a>

@@ -24,7 +24,6 @@ class SSOServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'sso');
-        Blade::componentNamespace('USO\\SsoClient\\View\\Components', 'sso');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'sso');
     }
 }

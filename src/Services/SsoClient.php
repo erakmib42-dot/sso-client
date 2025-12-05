@@ -19,8 +19,8 @@ class SsoClient
     public function getAccessToken()
     {
 
-        if (cache()->has('access_token')) {
-            return cache()->get('access_token');
+        if (cache()->has('sso_access_token')) {
+            return cache()->get('sso_access_token');
         } else {
 
             $resp = $this->http->asForm()->post(rtrim($this->config['server_url'],'/') . $this->config['token_endpoint'], [
@@ -32,16 +32,16 @@ class SsoClient
                 throw new \Exception('Token request failed: ' . $resp->body());
             }
 
-            cache()->put('access_token', $resp->json()->access_token, $resp->json()->expires_in);
+            cache()->put('sso_access_token', $resp->json()['access_token'], $resp->json()['expires_in']);
 
-            return $resp->json()->access_token;
+            return $resp->json()['access_token'];
         }
-
     }
 
     public function redirectToSso()
     {
-        return redirect($this->http->withToken($this->getAccessToken())->get(rtrim($this->config['server_url'],'/') . $this->config['authorize_endpoint'], ['redirect_uri' =>  route('sso.callback')]));
-    }
+        $redirect = rtrim($this->config['server_url'],'/') . $this->config['authorize_endpoint'] . '?redirect_uri=' . route('sso.callback');
 
+        return redirect($redirect);
+    }
 }

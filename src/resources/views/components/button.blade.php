@@ -10,6 +10,7 @@
         border-radius: 5px;
         font-weight: 700;
         text-decoration: none;
+        font-size: 14px;
     }
 </style>
 <a class="sso-button" href="{{ route('sso.redirect') }}"> SSO Авторизация </a>

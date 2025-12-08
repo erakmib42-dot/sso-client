@@ -15,10 +15,7 @@ class CallbackController extends Controller
 
     public function handle(Request $request)
     {
-        $state = session()->pull(config('sso.state_key'));
-        if (!$state || $state !== $request->get('state')) {
-            abort(403, 'Invalid SSO state');
-        }
+
         if ($request->has('error')) {
             return redirect('/')->with('error', $request->get('error_description') ?: $request->get('error'));
         }
@@ -36,6 +33,7 @@ class CallbackController extends Controller
         }
 
         if ($resp->failed()) {
+            Log::error('Token exchange failed', ['exception' => $resp->body(), 'ip' => $request->ip()]);
             abort(403, 'Token exchange failed');
         }
 
@@ -49,6 +47,8 @@ class CallbackController extends Controller
             'name' => $userData['name'] ?? null,
             'email' => $userData['email'] ?? null,
         ]);
+
+        Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip()]);
 
         Auth::login($user, true);
 

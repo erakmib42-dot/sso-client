@@ -51,7 +51,7 @@ class CallbackController extends Controller
             cache()->put('sso_user_'. $user->id, $userData, now()->addMinutes(60));
         }
 
-        return redirect()->intended('/');
+        return redirect()->intended(config('sso.redirect_url'));
     }
 
     private function findOrMergeUserData(array $userData) {

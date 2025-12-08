@@ -39,14 +39,7 @@ class CallbackController extends Controller
 
         $userData = $resp->json();
 
-        $userModel = config('auth.providers.users.model');
-
-        $user = $userModel::firstOrCreate([
-            'iin' => $userData['iin'] ?? null
-        ], [
-            'name' => $userData['name'] ?? null,
-            'email' => $userData['email'] ?? null,
-        ]);
+        $user =  $this->findOrMergeUserData($userData);
 
         Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip()]);
 
@@ -59,5 +52,29 @@ class CallbackController extends Controller
         }
 
         return redirect()->intended('/');
+    }
+
+    private function findOrMergeUserData(array $userData) {
+        $userModel = config('auth.providers.users.model');
+
+        $user = $userModel::firstOrCreate([
+            'iin' => $userData['iin'],
+            'email' => $userData['email'],
+        ],[
+            'name' => $userData['name'] ?? null,
+        ]);
+
+        if (!$user->email && $userData['email']) {
+            $user->email = $userData['email'];
+            $user->save();
+        }
+
+        if (!$user->iin && $userData['iin']) {
+            $user->iin = $userData['iin'];
+            $user->save();
+        }
+
+        return $user;
+
     }
 }

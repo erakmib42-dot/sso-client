@@ -57,24 +57,30 @@ class CallbackController extends Controller
     private function findOrMergeUserData(array $userData) {
         $userModel = config('auth.providers.users.model');
 
-        $user = $userModel::firstOrCreate([
-            'iin' => $userData['iin'],
-            'email' => $userData['email'],
-        ],[
-            'name' => $userData['name'] ?? null,
+        $iin   = $userData['iin'];
+        $email = $userData['email'];
+
+        $user = $userModel::where('iin', $iin)
+            ->orWhere('email', $email)
+            ->first();
+
+        if ($user) {
+            $user->fill([
+                'iin'   => $user->iin   ?: $iin,
+                'email' => $user->email ?: $email,
+            ]);
+
+            if ($user->isDirty()) {
+                $user->save();
+            }
+
+            return $user;
+        }
+
+        return $userModel::create([
+            'iin'   => $iin,
+            'email' => $email,
+            'name'  => $userData['name'] ?? null,
         ]);
-
-        if (!$user->email && $userData['email']) {
-            $user->email = $userData['email'];
-            $user->save();
-        }
-
-        if (!$user->iin && $userData['iin']) {
-            $user->iin = $userData['iin'];
-            $user->save();
-        }
-
-        return $user;
-
     }
 }

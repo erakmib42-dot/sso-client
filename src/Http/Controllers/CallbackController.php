@@ -11,7 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CallbackController extends Controller
 {
-    public function __construct(protected SsoClient $ssoClient){}
+
+    protected $ssoClient;
+
+    public function __construct(SsoClient $ssoClient){
+        $this->ssoClient = $ssoClient;
+    }
 
     public function handle(Request $request)
     {

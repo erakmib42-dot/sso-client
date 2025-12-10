@@ -33,13 +33,16 @@ class CallbackController extends Controller
                 'code' => $code,
             ]);
 
-        } catch (\Throwable $exception) {
-            Log::error('Не удалось получить токен', ['exception' => $exception]);
-        }
+            if ($resp->failed()) {
+                Log::error('Token exchange failed', ['exception' => $resp->body(), 'ip' => $request->ip()]);
+                abort(403, 'Token exchange failed');
+            }
 
-        if ($resp->failed()) {
-            Log::error('Token exchange failed', ['exception' => $resp->body(), 'ip' => $request->ip()]);
-            abort(403, 'Token exchange failed');
+        } catch (\Throwable $exception) {
+
+            Log::error('Не удалось получить токен', ['exception' => $exception]);
+
+            return redirect()->intended(config('sso.redirect_url'))->withErrors('Не удалось получить токен');
         }
 
         $userData = $resp->json();
@@ -60,6 +63,7 @@ class CallbackController extends Controller
     }
 
     private function findOrMergeUserData(array $userData) {
+
         $userModel = config('auth.providers.users.model');
 
         $iin   = $userData['iin'];

@@ -47,11 +47,15 @@ class CallbackController extends Controller
 
         $userData = $resp->json();
 
-        $user =  $this->findOrMergeUserData($userData);
+        $user = $this->findOrMergeUserData($userData);
 
-        Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip()]);
+        Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);
 
-        Auth::login($user, true);
+        Auth::login($user);
+
+        if (!Auth::check()) {
+            Log::info('Пользователь по SSO не авторизован', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);
+        }
 
         if (config('sso.token_storage') === 'session') {
             session()->put('sso_user_data', $userData);

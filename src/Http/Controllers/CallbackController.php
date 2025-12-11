@@ -49,9 +49,9 @@ class CallbackController extends Controller
 
         $user = $this->findOrMergeUserData($userData);
 
-        Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);
+        Log::info('Успешно полученные данные при авторизации SSO', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user, 'guard' => Auth::guard()->getName()]);
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
 
         if (!Auth::check()) {
             Log::info('Пользователь по SSO не авторизован', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);

@@ -42,7 +42,7 @@ class CallbackController extends Controller
 
             Log::error('Не удалось получить токен', ['exception' => $exception]);
 
-            return redirect()->intended(config('sso.redirect_url'))->withErrors('Не удалось получить токен');
+            return redirect()->intended(config('sso.redirect_uri'))->withErrors('Не удалось получить токен');
         }
 
         $userData = $resp->json();
@@ -63,7 +63,7 @@ class CallbackController extends Controller
             cache()->put('sso_user_'. $user->id, $userData, now()->addMinutes(60));
         }
 
-        return redirect()->intended(config('sso.redirect_url'));
+        return redirect()->intended(config('sso.redirect_uri'));
     }
 
     private function findOrMergeUserData(array $userData) {

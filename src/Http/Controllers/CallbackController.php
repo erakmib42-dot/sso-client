@@ -54,7 +54,7 @@ class CallbackController extends Controller
         Auth::guard('web')->login($user);
 
         if (!Auth::check()) {
-            Log::info('Пользователь по SSO не авторизован', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);
+            Log::error('Пользователь по SSO не авторизован', ['exception' => $resp->body(), 'ip' => $request->ip(), 'user-model' => $user]);
         }
 
         if (config('sso.token_storage') === 'session') {
